@@ -1,0 +1,27 @@
+name: Export Project Board History
+
+on:
+  workflow_dispatch:
+
+jobs:
+  export_history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Install Python deps
+        run: |
+          python -m pip install requests
+
+      - name: Run export script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python export_project.py > project_history.json
+
+      - name: Upload JSON artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: project_history
+          path: project_history.json
